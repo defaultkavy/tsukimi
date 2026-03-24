@@ -41,7 +41,7 @@ async function bundler(config: {entrypoint?: string, outDir: string}) {
                 entry: config.entrypoint ?? `${root}/index.html`,
                 formats: ['es'],
             },
-            rollupOptions: {
+            rolldownOptions: {
                 output: {
                     assetFileNames: 'assets/[name].[ext]',
                     chunkFileNames: 'src/[name].[hash].js',
