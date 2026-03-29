@@ -64,7 +64,6 @@ export class Tsukimi {
         }
 
         await awaitPromises();
-        console.debug(true, $html.global.promises.size)
         if ($head) {
             // assign children global to $head
             $.context(Proto, $head, () => {
@@ -111,7 +110,6 @@ export class Tsukimi {
         const html = $html.toString();
         $html.global.dispose();
         $html.dispose();
-        console.debug(false)
         return html;
     }
 
