@@ -1,5 +1,5 @@
 import 'amateras';
-import { ElementProto, type Proto } from 'amateras/core';
+import { ElementProto, Proto } from 'amateras/core';
 import { load, type Cheerio } from 'cheerio';
 import { _instanceof, forEach } from '../../amateras/packages/utils/src/lib/utils';
 
@@ -47,55 +47,71 @@ export class Tsukimi {
         $html.build();
         const $head = $html.findBelow(proto => _instanceof(proto, ElementProto) && proto.tagname === 'head')
         const $body = $html.findBelow(proto => proto instanceof ElementProto && proto.tagname === 'body');
-        const $app = $(this.app);
-        $app.parent = $body;
-        $app.build();
+        // assign app global to $head
+        $.context(Proto, $body, () => {
+            const $app = $(this.app);
+            $body?.append($app);
+            $app.build();
+        })
         //@ts-ignore
         if ($html.global.router) await Promise.all($html.global.router.resolve(path));
-        await Promise.all(Array.from($html.global.promises));
+        
+        // await app promises
+        async function awaitPromises() {
+            const promises = Array.from($html.global.promises);
+            await Promise.all(promises);
+            if ($html.global.promises.size) await awaitPromises();
+        }
+
+        await awaitPromises();
+        console.debug(true, $html.global.promises.size)
         if ($head) {
-            let cssText = ''
-            forEach($.styleMap, ([constructor, css]) => {
-                if ($html.findBelow(proto => proto.constructor === constructor)) forEach(css, rule => cssText += rule);
+            // assign children global to $head
+            $.context(Proto, $head, () => {
+                let cssText = ''
+                forEach($.styleMap, ([constructor, css]) => {
+                    if ($html.findBelow(proto => proto.constructor === constructor)) forEach(css, rule => cssText += rule);
+                })
+                //@ts-ignore
+                if ($.CSS) {
+                    //@ts-ignore
+                    cssText += $.CSS.text($html);
+                }
+                if (cssText.length) {
+                    const $style = $('style', {id: '__ssr__'}, () => $([ cssText ]));
+                    $head.append($style);
+                    $style.build();
+                }
+                //@ts-ignore
+                if ($html.global.prefetch) {
+                    //@ts-ignore
+                    const $script = $('script', () => $`window.prefetch = ${JSON.stringify($html.global.prefetch.caches)}`);
+                    $head.append($script);
+                    $script.build();
+                }
+                //@ts-ignore
+                if ($html.global.title) {
+                    //@ts-ignore
+                    const $title = $('title', () => $([$html.global.title]))
+                    $head.append($title);
+                    $title.build();
+                }
+                //@ts-ignore
+                if ($html.global.meta) {
+                    //@ts-ignore
+                    let metaList: [] = $.meta.resolve($html.global.meta);
+                    forEach(metaList, (meta => {
+                        const $meta = $('meta', meta);
+                        $head.append($meta);
+                        $meta.build();
+                    }))
+                }
             })
-            //@ts-ignore
-            if ($.CSS) {
-                //@ts-ignore
-                cssText += $.CSS.text($html);
-            }
-            if (cssText.length) {
-                const $style = $('style', {id: '__ssr__'}, () => $([ cssText ]));
-                $style.parent = $head;
-                $style.build();
-            }
-            //@ts-ignore
-            if ($html.global.prefetch) {
-                //@ts-ignore
-                const $script = $('script', () => $`window.prefetch = ${JSON.stringify($html.global.prefetch.caches)}`);
-                $script.parent = $head;
-                $script.build();
-            }
-            //@ts-ignore
-            if ($html.global.title) {
-                //@ts-ignore
-                const $title = $('title', () => $([$html.global.title]))
-                $title.parent = $head;
-                $title.build();
-            }
-            //@ts-ignore
-            if ($html.global.meta) {
-                //@ts-ignore
-                let metaList: [] = $.meta.resolve($html.global.meta);
-                forEach(metaList, (meta => {
-                    const $meta = $('meta', meta);
-                    $meta.parent = $head;
-                    $meta.build();
-                }))
-            }
         }
         const html = $html.toString();
         $html.global.dispose();
         $html.dispose();
+        console.debug(false)
         return html;
     }
 
