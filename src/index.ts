@@ -108,7 +108,6 @@ export class Tsukimi {
             })
         }
         const html = $html.toString();
-        $html.global.dispose();
         $html.dispose();
         return html;
     }
