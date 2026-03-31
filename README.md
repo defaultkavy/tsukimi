@@ -27,13 +27,11 @@ bun add tsukimi
     import 'amateras';
     import 'amateras/widget';
 
-    export const App = $.widget(() => ({
-        layout() {
+    export const App = $.widget(() => {
             $('h1', () => $`Hello, World!`)
-        }
-    }))
+    })
 
-    $.render($(App), () => document.body);
+    $.render(App, 'body');
     ```
 
     `server.ts`
@@ -44,7 +42,8 @@ bun add tsukimi
     const tsukimi = new Tsukimi({
         entrypoint: './index.html',
         outDir: './dist',
-        app: App
+        app: App,
+        selector: 'body'
     })
 
     Bun.serve({
