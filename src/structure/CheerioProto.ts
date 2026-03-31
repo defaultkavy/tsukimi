@@ -30,7 +30,6 @@ export class CheerioProto {
                 }
             })
         });
-        console.debug(element.is(containerSelector), element.prop('tagName'))
         if (!this.$container && element.is(containerSelector)) this.$container = proto;
         return proto;
     }
