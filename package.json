@@ -29,5 +29,9 @@
   "imports": {},
   "exports": {
     ".": "./src/index.ts"
-  }
+  },
+  "files": [
+    "src",
+    "tsconfig.json"
+  ]
 }
