@@ -65,4 +65,3 @@ bun add tsukimi
    ```sh
    bun server.ts
    ```
-```
