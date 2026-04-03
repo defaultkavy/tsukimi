@@ -28,7 +28,7 @@ bun add tsukimi
     import 'amateras/widget';
 
     export const App = $.widget(() => {
-            $('h1', () => $`Hello, World!`)
+        $('h1', () => $`Hello, World!`)
     })
 
     $.render(App, 'body');
