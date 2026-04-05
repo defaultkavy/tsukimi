@@ -5,14 +5,14 @@ import { CheerioProto } from './CheerioProto';
 
 export interface TsukimiConfig {
     entrypoint?: string;
-    app: Proto;
+    app: Proto | Constructor<Proto>;
     selector: string;
     outDir?: string;
 }
 
 export class Tsukimi {
     outDir: string;
-    app: Proto;
+    app: Proto | Constructor<Proto>;
     selector: string;
     constructor(config: TsukimiConfig) {
         this.outDir = config.outDir ?? 'dist';
