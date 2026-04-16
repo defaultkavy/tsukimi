@@ -2,10 +2,11 @@ import 'amateras';
 import { ElementProto, Proto } from 'amateras/core';
 import { _instanceof, forEach } from 'amateras/utils';
 import { CheerioProto } from './CheerioProto';
+import type { WidgetConstructor } from 'amateras/widget';
 
 export interface TsukimiConfig {
     entrypoint?: string;
-    app: Proto | Constructor<Proto>;
+    app: Proto | WidgetConstructor;
     selector: string;
     outDir?: string;
 }
@@ -30,7 +31,7 @@ export class Tsukimi {
         const $head = $html.findBelow(proto => _instanceof(proto, ElementProto) && proto.tagname === 'head')
         // assign app global to $head
         $.context(Proto, result.$container, () => {
-            const $app = $(this.app);
+            const $app = $(this.app as any);
             result.$container?.append($app);
             $app.build();
         })
