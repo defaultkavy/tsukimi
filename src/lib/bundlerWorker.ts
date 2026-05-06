@@ -36,18 +36,19 @@ async function bundler(config: {entrypoint?: string, outDir: string}) {
             emptyOutDir: true,
             write: true,
             minify: 'esbuild',
+            target: 'esnext',
             copyPublicDir: true,
-            lib: {
-                entry: config.entrypoint ?? `${root}/index.html`,
-                formats: ['es'],
-            },
+            // lib: {
+            //     entry: config.entrypoint ?? `${root}/index.html`,
+            //     formats: ['es'],
+            // },
             rollupOptions: {
                 output: {
                     assetFileNames: 'assets/[name].[ext]',
                     chunkFileNames: 'src/[name].[hash].js',
                     entryFileNames: '[name].js',
                 },
-                input: 'index.html'
+                input: config.entrypoint ?? `${root}/index.html`
             }
         }
     });
