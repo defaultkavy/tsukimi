@@ -1,6 +1,6 @@
 {
   "name": "tsukimi",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Tsukimi is a Server Side Render library for Amateras.",
   "module": "index.ts",
   "type": "module",
@@ -18,7 +18,7 @@
     "@types/bun": "latest"
   },
   "peerDependencies": {
-    "amateras": "^0.12.0"
+    "amateras": "^0.14.0"
   },
   "dependencies": {
     "cheerio": "^1.2.0",
