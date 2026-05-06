@@ -1,6 +1,6 @@
 import 'amateras';
 import { ElementProto, Proto } from 'amateras/core';
-import { _instanceof, forEach } from 'amateras/utils';
+import { _instanceof, forEach, isString } from 'amateras/utils';
 import { CheerioProto } from './CheerioProto';
 import type { WidgetConstructor } from 'amateras/widget';
 
@@ -22,10 +22,12 @@ export class Tsukimi {
         this.bundler(config.entrypoint);
     }
 
-    async render(path: string) {
+    async render(req: URL | string | Request) {
         const index_html = await Bun.file(this.outDir + '/index.html').text();
         const result = new CheerioProto(index_html, 'html', this.selector);
         const {$html} = result;
+        //@ts-ignore
+        if (_instanceof(req, Request) && $html.global.prefetch) $html.global.prefetch.req = req;
         $html.build();
         if (!result.$container) throw 'Tsukimi.render(): container element not found';
         const $head = $html.findBelow(proto => _instanceof(proto, ElementProto) && proto.tagname === 'head')
@@ -36,7 +38,7 @@ export class Tsukimi {
             $app.build();
         })
         //@ts-ignore
-        if ($html.global.router) await Promise.all($html.global.router.resolve(path));
+        if ($html.global.router) await Promise.all($html.global.router.resolve(_instanceof(req, URL) || isString(req) ? req : req.url));
         
         // await app promises
         async function awaitPromises() {
