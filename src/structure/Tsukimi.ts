@@ -27,7 +27,7 @@ export class Tsukimi {
         const result = new CheerioProto(index_html, 'html', this.selector);
         const {$html} = result;
         //@ts-ignore
-        if (_instanceof(req, Request) && $html.global.prefetch) $html.global.prefetch.req = req;
+        if (Utils.isInstanceof(req, Request) && $html.global.prefetch) $html.global.prefetch.req = req;
         $html.build();
         if (!result.$container) throw 'Tsukimi.render(): container element not found';
         const $head = $html.findBelow(proto => Utils.isInstanceof(proto, ElementProto) && proto.tagname === 'head')
@@ -38,7 +38,7 @@ export class Tsukimi {
             $app.build();
         })
         //@ts-ignore
-        if ($html.global.router) await Promise.all($html.global.router.resolve(_instanceof(req, URL) || isString(req) ? req : req.url));
+        if ($html.global.router) await Promise.all($html.global.router.resolve(Utils.isInstanceof(req, URL) || isString(req) ? req : req.url));
         
         // await app promises
         async function awaitPromises() {
