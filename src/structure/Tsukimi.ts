@@ -1,8 +1,8 @@
 import 'amateras';
 import { ElementProto, Proto } from 'amateras/core';
-import { _instanceof, forEach, isString } from 'amateras/utils';
 import { CheerioProto } from './CheerioProto';
 import type { WidgetConstructor } from 'amateras/widget';
+import { Utils } from 'amateras/utils';
 
 export interface TsukimiConfig {
     entrypoint?: string;
@@ -30,7 +30,7 @@ export class Tsukimi {
         if (_instanceof(req, Request) && $html.global.prefetch) $html.global.prefetch.req = req;
         $html.build();
         if (!result.$container) throw 'Tsukimi.render(): container element not found';
-        const $head = $html.findBelow(proto => _instanceof(proto, ElementProto) && proto.tagname === 'head')
+        const $head = $html.findBelow(proto => Utils.isInstanceof(proto, ElementProto) && proto.tagname === 'head')
         // assign app global to $head
         $.context(Proto, result.$container, () => {
             const $app = $(this.app as any);
@@ -52,8 +52,8 @@ export class Tsukimi {
             // assign children global to $head
             $.context(Proto, $head, () => {
                 let cssText = ''
-                forEach($.styleMap, ([constructor, css]) => {
-                    if ($html.findBelow(proto => proto.constructor === constructor)) forEach(css, rule => cssText += rule);
+                Utils.forEach($.styleMap, ([constructor, css]) => {
+                    if ($html.findBelow(proto => proto.constructor === constructor)) Utils.forEach(css, rule => cssText += rule);
                 })
                 //@ts-ignore
                 if ($.CSS) {
@@ -83,7 +83,7 @@ export class Tsukimi {
                 if ($html.global.meta) {
                     //@ts-ignore
                     let metaList: [] = $.meta.resolve($html.global.meta);
-                    forEach(metaList, (meta => {
+                    Utils.forEach(metaList, (meta => {
                         const $meta = $('meta', meta);
                         $head.append($meta);
                         $meta.build();
