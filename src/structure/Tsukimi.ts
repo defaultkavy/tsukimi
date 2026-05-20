@@ -38,7 +38,7 @@ export class Tsukimi {
             $app.build();
         })
         //@ts-ignore
-        if ($html.global.router) await Promise.all($html.global.router.resolve(Utils.isInstanceof(req, URL) || isString(req) ? req : req.url));
+        if ($html.global.router) await Promise.all($html.global.router.resolve(Utils.isInstanceof(req, URL) || Utils.isString(req) ? req : req.url));
         
         // await app promises
         async function awaitPromises() {
