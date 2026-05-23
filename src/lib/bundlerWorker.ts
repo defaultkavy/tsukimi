@@ -47,6 +47,20 @@ async function bundler(config: {entrypoint?: string, outDir: string}) {
                     assetFileNames: 'assets/[name].[ext]',
                     chunkFileNames: 'src/[name].[hash].js',
                     entryFileNames: '[name].js',
+                    codeSplitting: {
+                        includeDependenciesRecursively: false,
+                        groups: [
+                            {
+                                name: 'AMATERAS',
+                                test: id => {
+                                    if (/amateras\/packages/.test(id)) {
+                                        if (id.includes('/packages/ui')) return false;
+                                        return true;
+                                    }
+                                }
+                            }
+                        ]
+                    }
                 },
                 input: config.entrypoint ?? `${root}/index.html`
             }
