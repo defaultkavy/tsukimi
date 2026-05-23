@@ -67,8 +67,12 @@ export class Tsukimi {
                 }
                 //@ts-ignore
                 if ($html.global.prefetch) {
-                    //@ts-ignore
-                    const $script = $('script', () => $`window.prefetch = ${JSON.stringify($html.global.prefetch.caches)}`);
+                    const $script = $('script', () => $`window.prefetch = ${JSON.stringify({
+                        //@ts-ignore
+                        caches: $html.global.prefetch.caches,
+                        //@ts-ignore
+                        expired: $html.global.prefetch.expired,
+                    })}`);
                     $head.append($script);
                     $script.build();
                 }
