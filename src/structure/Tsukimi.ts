@@ -3,6 +3,7 @@ import { ElementProto, Proto } from 'amateras/core';
 import { CheerioProto } from './CheerioProto';
 import type { WidgetConstructor } from 'amateras/widget';
 import { Utils } from 'amateras/utils';
+import path from 'path';
 
 export interface TsukimiConfig {
     root?: string;
@@ -19,8 +20,8 @@ export class Tsukimi {
     entryfile: string;
     root: string;
     constructor(config: TsukimiConfig) {
-        this.outDir = config.outDir ?? 'dist';
         this.root = config.root ?? process.cwd();
+        this.outDir = config.outDir ?? 'dist';
         this.entryfile = config.entryfile ?? 'index.html';
         this.app = config.app;
         this.selector = config.selector;
@@ -28,7 +29,7 @@ export class Tsukimi {
     }
 
     async render(req: URL | string | Request) {
-        const index_html = await Bun.file(this.outDir + '/index.html').text();
+        const index_html = await Bun.file(path.resolve(this.root, this.outDir, this.entryfile)).text();
         const result = new CheerioProto(index_html, 'html', this.selector);
         const {$html} = result;
         //@ts-ignore
