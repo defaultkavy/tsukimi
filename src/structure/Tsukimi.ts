@@ -5,7 +5,8 @@ import type { WidgetConstructor } from 'amateras/widget';
 import { Utils } from 'amateras/utils';
 
 export interface TsukimiConfig {
-    entrypoint?: string;
+    root?: string;
+    entryfile?: string;
     app: Proto | WidgetConstructor;
     selector: string;
     outDir?: string;
@@ -15,11 +16,15 @@ export class Tsukimi {
     outDir: string;
     app: Proto | Constructor<Proto>;
     selector: string;
+    entryfile: string;
+    root: string;
     constructor(config: TsukimiConfig) {
         this.outDir = config.outDir ?? 'dist';
+        this.root = config.root ?? process.cwd();
+        this.entryfile = config.entryfile ?? 'index.html';
         this.app = config.app;
         this.selector = config.selector;
-        this.bundler(config.entrypoint);
+        this.bundler();
     }
 
     async render(req: URL | string | Request) {
@@ -101,11 +106,11 @@ export class Tsukimi {
     }
 
 
-    private async bundler(entrypoint?: string) {
+    private async bundler() {
         const worker = new Worker(`${__dirname}/../lib/bundlerWorker.ts`);
         worker.onmessage = (e) => {
             if (e.data === 'ready') {
-                worker.postMessage({outDir: this.outDir, entrypoint});
+                worker.postMessage({outDir: this.outDir, root: this.root, entryfile: this.entryfile});
             }
             else {
                 // this.#bundlerOutput = e.data;

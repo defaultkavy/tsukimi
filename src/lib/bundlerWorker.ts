@@ -6,9 +6,8 @@ self.onmessage = async (e) => {
 
 self.postMessage('ready');
 
-async function bundler(config: {entrypoint?: string, outDir: string}) {
+async function bundler(config: {root: string, outDir: string, entryfile: string}) {
 
-    const root = process.cwd();
     // const dist = config.outDir;
 
     // // delete old files
@@ -30,7 +29,7 @@ async function bundler(config: {entrypoint?: string, outDir: string}) {
 
     await build({
         configFile: false,
-        root: root,
+        root: config.root,
         build: {
             outDir: config.outDir,
             emptyOutDir: true,
@@ -62,7 +61,7 @@ async function bundler(config: {entrypoint?: string, outDir: string}) {
                         ]
                     }
                 },
-                input: config.entrypoint ?? `${root}/index.html`
+                input: `${config.root}/${config.entryfile}`
             }
         }
     });
