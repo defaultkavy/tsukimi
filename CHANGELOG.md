@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.0] - 2026-05-26
+
+### Features
+- **Update Amateras to V0.15.0**: Apply newest features.
+- **Split Amateras Module From Project Bundle Code**: The bundle result will write Amateras packages code in a standalone file (AMATERAS.\[hash\].js), this is helpful to make index.js file import and run Amateras initialization code first before import any other files.
+- **Root Configuration**: Set your entryfile directory path to `root` option in configuration, this help program find your project root path even start server in other directory.
+- **Change Entrypoint to Entryfile**: Set your entry HTML filename to entryfile, default name is `index.html`.
+
 ## [0.3.0] - 2026-05-07
 
 ### Features

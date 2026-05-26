@@ -40,7 +40,8 @@ bun add tsukimi
     import { App } from './index.ts';
 
     const tsukimi = new Tsukimi({
-        entrypoint: './index.html',
+        root: import.meta.dir,
+        entryfile: 'index.html',
         outDir: './dist',
         app: App,
         selector: 'body'
