@@ -28,13 +28,14 @@ export class Tsukimi {
         this.bundler();
     }
 
-    async render(req: URL | string | Request) {
+    async render(req: URL | string | Request, htmlHandle?: ($html: ElementProto<HTMLHtmlElement>) => void) {
         const index_html = await Bun.file(path.resolve(this.root, this.outDir, this.entryfile)).text();
         const result = new CheerioProto(index_html, 'html', this.selector);
         const {$html} = result;
         //@ts-ignore
         if (Utils.isInstanceof(req, Request) && $html.global.prefetch) $html.global.prefetch.req = req;
         $html.build();
+        htmlHandle?.($html as ElementProto<HTMLHtmlElement>)
         if (!result.$container) throw 'Tsukimi.render(): container element not found';
         const $head = $html.findBelow(proto => Utils.isInstanceof(proto, ElementProto) && proto.tagname === 'head')
         // assign app global to $head
