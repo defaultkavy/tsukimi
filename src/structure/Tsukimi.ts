@@ -104,7 +104,7 @@ export class Tsukimi {
         }
         const html = $html.toString();
         $html.dispose();
-        return html;
+        return `<!DOCTYPE html>\n${html}`;
     }
 
 
