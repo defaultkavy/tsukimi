@@ -39,7 +39,7 @@ export class Tsukimi {
         if (!result.$container) throw 'Tsukimi.render(): container element not found';
         const $head = $html.findBelow(proto => Utils.isInstanceof(proto, ElementProto) && proto.tagname === 'head')
         // assign app global to $head
-        $.context(Proto, result.$container, () => {
+        $.context(result.$container, () => {
             const $app = $(this.app as any);
             result.$container?.append($app);
             $app.build();
@@ -57,7 +57,7 @@ export class Tsukimi {
         await awaitPromises();
         if ($head) {
             // assign children global to $head
-            $.context(Proto, $head, () => {
+            $.context($head, () => {
                 let cssText = ''
                 Utils.forEach($.styleMap, ([constructor, css]) => {
                     if ($html.findBelow(proto => proto.constructor === constructor)) Utils.forEach(css, rule => cssText += rule);
