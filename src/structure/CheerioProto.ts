@@ -1,13 +1,13 @@
-import type { Proto } from "amateras/core";
+import type { ElementProto, Proto } from "amateras/core";
 import { load, type Cheerio } from 'cheerio';
 
 export class CheerioProto {
-    $html: Proto;
+    $html: ElementProto;
     $container: Proto | null = null;
     constructor(html: string, rootSelector: string, containerSelector: string) {
         const cheerio$ = load(html);
         const c_html = cheerio$(rootSelector);
-        this.$html = this.toProto(c_html, containerSelector);
+        this.$html = this.toProto(c_html, containerSelector) as ElementProto;
     }
 
     toProto(element: Cheerio<any>, containerSelector: string): Proto {

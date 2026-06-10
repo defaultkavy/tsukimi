@@ -1,5 +1,5 @@
 import 'amateras';
-import { ElementProto, Proto } from 'amateras/core';
+import { ElementProto, GlobalState, Proto } from 'amateras/core';
 import { CheerioProto } from './CheerioProto';
 import type { WidgetConstructor } from 'amateras/widget';
 import { Utils } from 'amateras/utils';
@@ -37,7 +37,7 @@ export class Tsukimi {
         $html.build();
         htmlHandle?.($html as ElementProto<HTMLHtmlElement>)
         if (!result.$container) throw 'Tsukimi.render(): container element not found';
-        const $head = $html.findBelow(proto => Utils.isInstanceof(proto, ElementProto) && proto.tagname === 'head')
+        const $head = $html.findBelow<ElementProto>(proto => Utils.isInstanceof(proto, ElementProto) && proto.tagname === 'head')
         // assign app global to $head
         $.context(result.$container, () => {
             const $app = $(this.app as any);
@@ -55,6 +55,7 @@ export class Tsukimi {
         }
 
         await awaitPromises();
+
         if ($head) {
             // assign children global to $head
             $.context($head, () => {
@@ -90,17 +91,9 @@ export class Tsukimi {
                     $head.append($title);
                     $title.build();
                 }
-                //@ts-ignore
-                if ($html.global.meta) {
-                    //@ts-ignore
-                    let metaList: [] = $.meta.resolve($html.global.meta);
-                    Utils.forEach(metaList, (meta => {
-                        const $meta = $('meta', meta);
-                        $head.append($meta);
-                        $meta.build();
-                    }))
-                }
             })
+
+            GlobalState.ssrHandlers.forEach(fn => fn($html, $head));
         }
         const html = $html.toString();
         $html.dispose();
