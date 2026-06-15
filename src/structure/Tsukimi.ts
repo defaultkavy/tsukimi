@@ -1,5 +1,5 @@
 import 'amateras';
-import { ElementProto, GlobalState, Proto } from 'amateras/core';
+import { ElementProto, Proto } from 'amateras/core';
 import { CheerioProto } from './CheerioProto';
 import type { WidgetConstructor } from 'amateras/widget';
 import { Utils } from 'amateras/utils';
@@ -56,45 +56,9 @@ export class Tsukimi {
 
         await awaitPromises();
 
-        if ($head) {
-            // assign children global to $head
-            $.context($head, () => {
-                let cssText = ''
-                Utils.forEach($.styleMap, ([constructor, css]) => {
-                    if ($html.findBelow(proto => proto.constructor === constructor)) Utils.forEach(css, rule => cssText += rule);
-                })
-                //@ts-ignore
-                if ($.CSS) {
-                    //@ts-ignore
-                    cssText += $.CSS.text($html);
-                }
-                if (cssText.length) {
-                    const $style = $('style', {id: '__ssr__'}, () => $([ cssText ]));
-                    $head.append($style);
-                    $style.build();
-                }
-                //@ts-ignore
-                if ($html.global.prefetch) {
-                    const $script = $('script', () => $`window.prefetch = ${JSON.stringify({
-                        //@ts-ignore
-                        caches: $html.global.prefetch.caches,
-                        //@ts-ignore
-                        expired: $html.global.prefetch.expired,
-                    })}`);
-                    $head.append($script);
-                    $script.build();
-                }
-                //@ts-ignore
-                if ($html.global.title) {
-                    //@ts-ignore
-                    const $title = $('title', () => $([$html.global.title]))
-                    $head.append($title);
-                    $title.build();
-                }
-            })
+        // apply ssr middleware process
+        if ($head) $.middleware.ssr.forEach(fn => fn($html, $head));
 
-            GlobalState.ssrHandlers.forEach(fn => fn($html, $head));
-        }
         const html = $html.toString();
         $html.dispose();
         return `<!DOCTYPE html>\n${html}`;
