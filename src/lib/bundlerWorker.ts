@@ -54,6 +54,7 @@ async function bundler(config: {root: string, outDir: string, entryfile: string}
                                 test: id => {
                                     if (/amateras\/packages/.test(id)) {
                                         if (id.includes('/packages/ui')) return false;
+                                        if (id.includes('/packages/markdown')) return false;
                                         return true;
                                     }
                                 }
