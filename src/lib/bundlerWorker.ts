@@ -1,4 +1,4 @@
-import { build } from "vite";
+import { build, loadConfigFromFile, mergeConfig, type InlineConfig } from "vite";
 
 self.onmessage = async (e) => {
     self.postMessage(await bundler(e.data))
@@ -8,26 +8,7 @@ self.postMessage('ready');
 
 async function bundler(config: {root: string, outDir: string, entryfile: string}) {
 
-    // const dist = config.outDir;
-
-    // // delete old files
-    // await Bun.$`rm -rf ${dist}`
-    // const output = await Bun.build({
-    //     plugins: [],
-    //     entrypoints: [config.entrypoint ?? `${root}/index.html`],
-    //     outdir: dist,
-    //     // minify: true,
-    //     target: 'browser',
-    //     splitting: true,
-    //     naming: {
-    //         chunk: './src/[name]-[hash].[ext]',
-    //         asset: './assets/[name].[ext]',
-    //         entry: '[name].[ext]'
-    //     },
-    //     format: 'esm',
-    // })
-
-    await build({
+    const defaultConfig: InlineConfig = {
         configFile: false,
         root: config.root,
         build: {
@@ -65,5 +46,36 @@ async function bundler(config: {root: string, outDir: string, entryfile: string}
                 input: `${config.root}/${config.entryfile}`
             }
         }
-    });
+    }
+
+    const loadConfig = await loadConfigFromFile({
+        command: 'build', mode: 'production'
+    }, undefined, config.root)
+
+    const buildConfig = loadConfig ? mergeConfig(defaultConfig, loadConfig) : defaultConfig;
+
+    if (buildConfig.plugins) {
+        buildConfig.plugins.push(...loadConfig?.config.plugins ?? [])
+    } else buildConfig.plugins = loadConfig?.config.plugins;
+
+    await build(buildConfig);
 }
+
+// const dist = config.outDir;
+
+// // delete old files
+// await Bun.$`rm -rf ${dist}`
+// const output = await Bun.build({
+//     plugins: [],
+//     entrypoints: [config.entrypoint ?? `${root}/index.html`],
+//     outdir: dist,
+//     // minify: true,
+//     target: 'browser',
+//     splitting: true,
+//     naming: {
+//         chunk: './src/[name]-[hash].[ext]',
+//         asset: './assets/[name].[ext]',
+//         entry: '[name].[ext]'
+//     },
+//     format: 'esm',
+// })
