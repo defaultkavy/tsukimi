@@ -1,4 +1,4 @@
-import type { ElementProto, Proto } from "amateras/core";
+import type { ElementProto, Proto } from "@amateras/core";
 import { load, type Cheerio } from 'cheerio';
 
 export class CheerioProto {

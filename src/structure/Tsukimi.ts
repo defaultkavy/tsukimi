@@ -1,9 +1,10 @@
 import 'amateras';
-import { ElementProto, Proto } from 'amateras/core';
+import { ElementProto, Proto } from '@amateras/core';
 import { CheerioProto } from './CheerioProto';
-import type { WidgetConstructor } from 'amateras/widget';
-import { Utils } from 'amateras/utils';
+import type { WidgetConstructor } from '@amateras/widget';
+import { Utils } from '@amateras/utils';
 import path from 'path';
+import 'bun';
 
 export interface TsukimiConfig {
     root?: string;
