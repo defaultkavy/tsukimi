@@ -33,9 +33,9 @@ async function bundler(config: {root: string, outDir: string, entryfile: string}
                             {
                                 name: 'AMATERAS',
                                 test: id => {
-                                    if (/amateras\/packages/.test(id)) {
-                                        if (id.includes('/packages/ui')) return false;
-                                        if (id.includes('/packages/markdown')) return false;
+                                    if (/@amateras\/.+?\//.test(id) || /amateras\/packages/.test(id)) {
+                                        if (id.includes('@amateras/ui') || id.includes('/packages/ui')) return false;
+                                        if (id.includes('@amateras/markdown') || id.includes('/packages/markdown')) return false;
                                         return true;
                                     }
                                 }
