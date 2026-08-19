@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.0] - 2026-08-19
+
+### Changes
+- Vite config file is respected when Tsukimi bundle the files.
+- Fix `@amateras/markdown` didn't excluded from `AMATERAS.js` bundle file.
+- Amateras update to `v0.17.0`.
+
+
 ## [0.5.0] - 2026-06-15
 
 ### Features
