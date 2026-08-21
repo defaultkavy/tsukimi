@@ -26,7 +26,6 @@
   "dependencies": {
     "cheerio": "^1.2.0",
     "esbuild": "^0.27.7",
-    "rollup": "^4.62.4",
     "vite": "^8.2.1"
   },
   "imports": {},
